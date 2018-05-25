@@ -1,0 +1,35 @@
+{
+  "name": "cano-cube-mongoose",
+  "version": "1.0.0",
+  "description": "A cube used in cano microframework for bind models mongo to app.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha -R spec ./test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cano-koa/cano-cube-mongoose.git"
+  },
+  "keywords": [
+    "cano",
+    "cube",
+    "mongodb",
+    "mongoose",
+    "class",
+    "model",
+    "schema"
+  ],
+  "author": "Ernesto Rojas <ernesto20145@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/cano-koa/cano-cube-mongoose/issues"
+  },
+  "homepage": "https://github.com/cano-koa/cano-cube-mongoose#readme",
+  "dependencies": {
+    "cano-cube": "git+https://github.com/cano-koa/cano-cube.git",
+    "mongoose": "^5.1.2",
+    "mongoose-model-class": "https://github.com/cano-koa/mongoose-model-class.git",
+    "require-all": "^2.2.0"
+  }
+}
