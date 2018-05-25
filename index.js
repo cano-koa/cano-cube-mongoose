@@ -43,16 +43,16 @@ class MongooseCube extends Cube {
 	 */
 	up() {
 		return new Promise((resolve) => {
-			const modelsClass = getModelsClass(this.cano.app.paths.api);
+			const models = getModelsClass(this.cano.app.paths.api);
 			const databaseConfig = buildConfig(this.cano.app.paths.config);
 			const { stores, storeDefault } = databaseConfig;
 			map(stores, (store, name) => {
-				const models = getModels(name, storeDefault, modelsClass);
-				if (keys(models).length > 0) {
+				const modelsStore = getModels(name, storeDefault, models);
+				if (keys(modelsStore).length > 0) {
 					const mongoose = require('mongoose');
 					const uri = store.connection.uri;
     			mongoose.connect(uri, { promiseLibrary: global.Promise });
-					map(models, (store, name) => {
+					map(modelsStore, (store, name) => {
 						this.cano.app.models[name] = store.build(mongoose, name);
 					});
 				}
@@ -63,11 +63,19 @@ class MongooseCube extends Cube {
 
 }
 
+/**
+ * @method getModels
+ * @param {string} String with store's name.
+ * @param {string} String with store default name.
+ * @param {object} Object with all models defined into project.
+ * @description This methos gel all models of current store.
+ * @returns {object} Object with the models of current store.
+ * @author Ernesto Rojas <ernesto20145@gmail.com>
+ */
 function getModels(nameStore, storeDefault, modelsClass) {
 	const currentIsDefault = nameStore === storeDefault;
 	const models = {};
-	map(modelsClass, (M, name) => {
-		const model = new M();
+	map(modelsClass, (model, name) => {
 		const store = model.store || storeDefault;
 		if (store === nameStore) {
 			models[name]=model;
@@ -83,8 +91,13 @@ function getModels(nameStore, storeDefault, modelsClass) {
  * @returns {object} Object with the required configuration database file.
  * @author Ernesto Rojas <ernesto20145@gmail.com>
  */
-function getModelsClass(_path) {
-  return require('require-all')(path.join(_path, '/models'));
+function getModelsClass(path) {
+	const modelsRef = require('require-all')(`${path}/models`);
+	const models = {};
+	map(modelsRef, (Model, name) => {
+		models[name] = new Model();
+	});
+  return models;
 }
 
 /**
