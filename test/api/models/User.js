@@ -1,4 +1,5 @@
 const MongooseModelClass = require('mongoose-model-class');
+const sha1 = require('sha1');
 
 class User extends MongooseModelClass {
   schema() {
@@ -11,6 +12,11 @@ class User extends MongooseModelClass {
       password: { type: String, require: true },
       status: { type: Boolean, default: true },
     };
+  }
+
+  beforeSave(doc, next) {
+    doc.password = sha1(doc.password);
+    next();
   }
 
   get fullname() {
