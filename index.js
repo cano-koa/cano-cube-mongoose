@@ -47,14 +47,16 @@ class MongooseCube extends Cube {
 			const databaseConfig = buildConfig(this.cano.app.paths.config);
 			const { stores, storeDefault } = databaseConfig;
 			map(stores, (store, name) => {
-				const modelsStore = getModels(name, storeDefault, models);
-				if (keys(modelsStore).length > 0) {
-					const mongoose = require('mongoose');
-					const uri = store.connection.uri;
-    			mongoose.connect(uri, { promiseLibrary: global.Promise });
-					map(modelsStore, (store, name) => {
-						this.cano.app.models[name] = store.build(mongoose, name);
-					});
+				if (store.adapter === 'mongoose') {
+					const modelsStore = getModels(name, storeDefault, models);
+					if (keys(modelsStore).length > 0) {
+						const mongoose = require('mongoose');
+						const uri = store.connection.uri;
+						const connection = mongoose.createConnection(uri, { promiseLibrary: global.Promise });
+						map(modelsStore, (store, name) => {
+							global[name] = this.cano.app.models[name] = store.build(connection, name);
+						});
+					}
 				}
 			});
 			resolve();
@@ -115,6 +117,7 @@ const dbConfigDefault = {
 	stores: {
 		mongo: {
 			connection: { uri: 'mongodb://localhost/test' },
+			adapter: 'mongoose',
 		}
 	},
 	storeDefault: 'mongo',
