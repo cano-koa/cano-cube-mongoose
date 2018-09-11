@@ -54,7 +54,11 @@ class MongooseCube extends Cube {
 						const uri = store.connection.uri;
 						const connection = mongoose.createConnection(uri, { promiseLibrary: global.Promise });
 						map(modelsStore, (store, name) => {
-							global[name] = this.cano.app.models[name] = store.build(connection, name);
+							this.cano.app.models[name] = store.build(connection, name);
+							Object.defineProperty(global, name, {
+								writable: false,
+								value: this.cano.app.models[name]
+							})
 						});
 					}
 				}
