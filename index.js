@@ -1,5 +1,4 @@
 const Cube = require('cano-cube');
-const requireAll = require('require-all');
 const merge = require('lodash/merge');
 const keys = require('lodash/keys');
 const map = require('lodash/map');
@@ -52,7 +51,8 @@ class MongooseCube extends Cube {
 					if (keys(modelsStore).length > 0) {
 						const mongoose = require('mongoose');
 						const uri = store.connection.uri;
-						const connection = mongoose.createConnection(uri, { promiseLibrary: global.Promise });
+						mongoose.set('useCreateIndex', true);
+						const connection = mongoose.createConnection(uri, { promiseLibrary: global.Promise, useNewUrlParser: true });
 						map(modelsStore, (store, name) => {
 							this.cano.app.models[name] = store.build(connection, name);
 							Object.defineProperty(global, name, {
