@@ -51,8 +51,8 @@ class MongooseCube extends Cube {
 					if (keys(modelsStore).length > 0) {
 						const mongoose = require('mongoose');
 						const uri = store.connection.uri;
-						mongoose.set('useCreateIndex', true);
-						const connection = mongoose.createConnection(uri, { promiseLibrary: global.Promise, useNewUrlParser: true });
+						const options = getOptions(store.options);
+						const connection = mongoose.createConnection(uri, options);
 						map(modelsStore, (store, name) => {
 							this.cano.app.models[name] = store.build(connection, name);
 							Object.defineProperty(global, name, {
@@ -79,7 +79,6 @@ class MongooseCube extends Cube {
  * @author Ernesto Rojas <ernesto20145@gmail.com>
  */
 function getModels(nameStore, storeDefault, modelsClass) {
-	const currentIsDefault = nameStore === storeDefault;
 	const models = {};
 	map(modelsClass, (model, name) => {
 		const store = model.store || storeDefault;
@@ -117,12 +116,34 @@ function buildConfig(_path) {
   return merge({}, dbConfigDefault, require(path.join(_path, '/database.js')));
 }
 
+/**
+ * @method getOptions
+ * @param {object} Object with connection options for mongoose defined in database.js file in config folder at cano project.
+ * @description This method return a object with connection options valid for mongoose. If not defined options params, return default options.
+ * @returns {object} Object with connection options for mongoose.
+ * @author Ernesto Rojas <ernesto20145@gmail.com>
+ */
+function getOptions(options = {}) {
+	return Object.assign({}, optionsDefault, options);
+}
+
+const optionsDefault = {
+	promiseLibrary: global.Promise,
+	useCreateIndex: true,
+	useNewUrlParser: true,
+};
+
 const dbConfigDefault = {
 	stores: {
 		mongo: {
 			connection: { uri: 'mongodb://localhost/test' },
 			adapter: 'mongoose',
-		}
+			options: {
+				promiseLibrary: global.Promise,
+				useNewUrlParser: true,
+				useCreateIndex: true,
+			},
+		},
 	},
 	storeDefault: 'mongo',
 }

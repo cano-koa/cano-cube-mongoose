@@ -1,6 +1,6 @@
 {
   "name": "cano-cube-mongoose",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "A cube used in cano microframework for bind models mongo to app.",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   "homepage": "https://github.com/cano-koa/cano-cube-mongoose#readme",
   "dependencies": {
     "cano-cube": "^1.0.0",
-    "mongoose": "^5.1.2",
+    "mongoose": "^5.4.20",
     "require-all": "^3.0.0"
   },
   "devDependencies": {

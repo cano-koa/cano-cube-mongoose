@@ -12,7 +12,7 @@ const cano = {
 
 describe('Cube Mongoose test', () => {
 
-  let docUser, docArticle;
+  let docUser;
 
   it('Should create document for User model', async () => {
     docUser = await User.create({
@@ -29,7 +29,7 @@ describe('Cube Mongoose test', () => {
   });
 
   it('Should create document for Article model', async () => {
-    docArticle = await Article.create({
+    await Article.create({
       name: "A Song of Ice and Fire",
       autor: "George R. R. Martin",
       editorial: "Bantam Books",
@@ -44,8 +44,8 @@ describe('Cube Mongoose test', () => {
   })
 
   after(async () => {
-    await User.remove({});
-    await Article.remove({});
+    await User.deleteMany({});
+    await Article.deleteMany({});
   })
 
 });
